@@ -62,10 +62,11 @@ keymap("n", "<leader>fp", ":Telescope projects<CR>", opts)
 keymap("n", "<leader>fb", ":Telescope buffers<CR>", opts)
 
 -- Git
-keymap("n", "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", opts)
+keymap("n", "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", {desc = "Lazygit"})
+keymap("n", "<leader>gd", ":DiffviewOpen<CR>", {desc = "Git Diff"})
 
 -- Comment
-keymap("n", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", opts)
+keymap("n", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", {desc = "Comment"})
 keymap("x", "<leader>/", "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", opts)
 
 -- DAP
@@ -80,7 +81,24 @@ keymap("n", "<leader>du", "<cmd>lua require'dapui'.toggle()<cr>", opts)
 keymap("n", "<leader>dt", "<cmd>lua require'dap'.terminate()<cr>", opts)
 
 -- Lsp
-keymap("n", "<leader>lf", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", opts)
+keymap("n", "<leader>lf", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", {desc = "Format"})
+
+-- makrdown
+keymap("n", "<leader>mp", ":Glow<cr>", {desc = "Preview current markdown file"})
+
+
+-- pick window
+keymap("n", "<leader>w", function()
+    local picked_window_id = require('window-picker').pick_window() or vim.api.nvim_get_current_win()
+    vim.api.nvim_set_current_win(picked_window_id)
+end, { desc = "Pick a window" })
+
+-- spectre
+keymap("n", "<leader>S", "<cmd>lua require'spectre'.open()<cr>", {desc="Search and Replace with spectre"})
+-- search current word
+keymap("n", "<leader>sw", "<cmd>lua require'spectre'.open_visual({select_word=true})<cr>", {desc = "search current word"})
+-- search in current file
+keymap("n", "<leader>sp", "viw:lua require'spectre'.open_file_search()<cr>", {desc = "search in current file"})
 
 -- fold
 keymap('n', 'zR', require('ufo').openAllFolds)

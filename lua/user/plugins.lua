@@ -101,6 +101,8 @@ return packer.startup(function(use)
 
   -- Git
   use { "lewis6991/gitsigns.nvim", commit = "f98c85e7c3d65a51f45863a34feb4849c82f240f" }
+  use {'f-person/git-blame.nvim'}
+  use {'sindrets/diffview.nvim', requires = 'nvim-lua/plenary.nvim'}
 
   -- DAP
   use { "mfussenegger/nvim-dap", commit = "6b12294a57001d994022df8acbe2ef7327d30587" }
@@ -136,6 +138,28 @@ return packer.startup(function(use)
     config = function() require("go").setup() end,
   }
   use 'ray-x/guihua.lua'
+
+
+  use {
+    's1n7ax/nvim-window-picker',
+    tag = 'v1.*',
+    config = function()
+      require'window-picker'.setup()
+    end,
+  }
+
+  use {
+    'windwp/nvim-spectre'
+  }
+
+  use {'karb94/neoscroll.nvim'}
+
+  use {
+    "ellisonleao/glow.nvim",
+    config = function ()
+      require('glow').setup()
+    end,
+  }
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
