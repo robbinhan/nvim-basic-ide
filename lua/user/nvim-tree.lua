@@ -55,7 +55,7 @@ nvim_tree.setup {
   },
   view = {
     width = 30,
-    side = "left",
+    side = "right",
     mappings = {
       list = {
         { key = { "l", "<CR>", "o" }, cb = tree_cb "edit" },
@@ -65,3 +65,7 @@ nvim_tree.setup {
     },
   },
 }
+
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+vim.opt.termguicolors = true
