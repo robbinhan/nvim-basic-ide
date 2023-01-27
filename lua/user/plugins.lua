@@ -59,12 +59,7 @@ return packer.startup(function(use)
   use { "lewis6991/impatient.nvim", commit = "b842e16ecc1a700f62adb9802f8355b99b52a5a6" }
   use { "lukas-reineke/indent-blankline.nvim", commit = "db7cbcb40cc00fc5d6074d7569fb37197705e7f6" }
   -- dashboard
-  use { "goolord/alpha-nvim", commit = "0bb6fc0646bcd1cdb4639737a1cee8d6e08bcc31" ,
-    -- requires = { 'nvim-tree/nvim-web-devicons' },
-    -- config = function ()
-    --   require'alpha'.setup(require'alpha.themes.theta'.config)
-    -- end
-  }
+  use { "goolord/alpha-nvim", commit = "0bb6fc0646bcd1cdb4639737a1cee8d6e08bcc31"  }
 
   -- Colorschemes
   use { "folke/tokyonight.nvim", commit = "66bfc2e8f754869c7b651f3f47a2ee56ae557764" }
@@ -159,6 +154,12 @@ return packer.startup(function(use)
     config = function ()
       require('glow').setup()
     end,
+  }
+  use {
+    'theHamsta/nvim-dap-virtual-text',
+    config = function ()
+      require("nvim-dap-virtual-text").setup()
+    end
   }
 
   -- Automatically set up your configuration after cloning packer.nvim
