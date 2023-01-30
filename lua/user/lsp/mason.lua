@@ -2,7 +2,7 @@ local servers = {
 	"sumneko_lua",
 	-- "cssls",
 	-- "html:MasonInstall",
-	-- "tsserver",
+	"gopls",
 	-- "pyright",
 	"bashls",
 	"jsonls",

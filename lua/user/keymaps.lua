@@ -103,3 +103,32 @@ keymap("n", "<leader>sp", "viw:lua require'spectre'.open_file_search()<cr>", {de
 -- fold
 keymap('n', 'zR', require('ufo').openAllFolds)
 keymap('n', 'zM', require('ufo').closeAllFolds)
+
+
+local function close_buffer_and_nvimtree(buffer_cmd, last_window_cmd)
+  local tree = require("nvim-tree.api").tree
+  local buffer_count = #vim.fn.filter(vim.fn.range(1, vim.fn.bufnr '$'), 'buflisted(v:val)')
+  local command = buffer_count > 1 and buffer_cmd or last_window_cmd
+
+  tree.toggle({ focus = false })
+
+  local success, errorMsg = pcall(vim.api.nvim_command, command)
+  if not success then
+    print("Failed to quit: " .. errorMsg)
+  end
+
+  tree.toggle({ focus = false })
+
+  if buffer_count == 1 and #vim.api.nvim_list_wins() == 1 and require("nvim-tree.utils").is_nvim_tree_buf() then
+    vim.cmd("quit")
+  end
+end
+
+keymap("n", "<Leader>q", function()
+  close_buffer_and_nvimtree("bd", "q")
+end, { noremap = true, silent = true ,desc = "Close buffer"})
+keymap("n", "<Leader>x", function()
+  close_buffer_and_nvimtree("bd!", "q!")
+end, { noremap = true, silent = true, desc = "Close buffer Force" })
+
+
