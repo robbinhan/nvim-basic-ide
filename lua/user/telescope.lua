@@ -10,7 +10,7 @@ telescope.setup {
 
     prompt_prefix = " ",
     selection_caret = " ",
-    path_display = { "smart" },
+    -- path_display = { "smart" },
     file_ignore_patterns = { ".git/", "node_modules" },
 
     mappings = {
@@ -22,4 +22,10 @@ telescope.setup {
       },
     },
   },
+  pickers = {
+		find_files = {
+			-- `hidden = true` will still show the inside of `.git/` as it's not `.gitignore`d.
+			find_command = { "rg", "--files", "--hidden", "--glob", "!**/.git/*" },
+		},
+	},
 }

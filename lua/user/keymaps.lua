@@ -131,4 +131,7 @@ keymap("n", "<Leader>x", function()
   close_buffer_and_nvimtree("bd!", "q!")
 end, { noremap = true, silent = true, desc = "Close buffer Force" })
 
+-- termnial
+
+keymap("n", "<leader>tt", ":ToggleTerm<CR>", {desc="Open Termnial"})
 
