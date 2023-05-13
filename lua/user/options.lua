@@ -53,5 +53,5 @@ vim.o.foldlevelstart = 99
 vim.o.foldenable = true
 
 
-
+-- vim.g.codeium_disable_bindings = 1
 
