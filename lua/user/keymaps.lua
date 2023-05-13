@@ -135,3 +135,7 @@ end, { noremap = true, silent = true, desc = "Close buffer Force" })
 
 keymap("n", "<leader>tt", ":ToggleTerm<CR>", {desc="Open Termnial"})
 
+
+keymap("n","<Leader>c",'<Plug>OSCYankOperator')
+keymap("n","<Leader>cc",'<leader>c_', {remap = true})
+keymap("v","<Leader>c",'<Plug>OSCYankVisual')

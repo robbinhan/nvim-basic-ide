@@ -91,7 +91,7 @@ return packer.startup(function(use)
   -- Treesitter
   use {
     "nvim-treesitter/nvim-treesitter",
-    commit = "8e763332b7bf7b3a426fd8707b7f5aa85823a5ac",
+    -- commit = "8e763332b7bf7b3a426fd8707b7f5aa85823a5ac",
   }
 
   -- Git
@@ -118,9 +118,7 @@ return packer.startup(function(use)
     end
   }
 
-  use  {
-    "wfxr/minimap.vim",
-  }
+
   use {'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async',config = function ()
     -- Option 2: nvim lsp as LSP client
     -- Tell the server the capability of foldingRange,
@@ -179,6 +177,10 @@ return packer.startup(function(use)
     end
   }
 
+  use({
+      "ojroques/vim-oscyank",
+    })
+ 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after all plugins
   if PACKER_BOOTSTRAP then
