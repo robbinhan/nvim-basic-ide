@@ -1,3 +1,7 @@
+if vim.g.neovide then
+  -- set guifont=Your\ Font\ Name:h15
+end
+
 require "user.impatient"
 require "user.options"
 require "user.keymaps"
