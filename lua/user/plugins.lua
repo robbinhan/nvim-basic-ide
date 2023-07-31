@@ -184,16 +184,16 @@ end}
   })
 
 
-  use { 
-    'Exafunction/codeium.vim',
-    config = function ()
-      -- Change '<C-g>' here to any keycode you like.
-      vim.keymap.set('i', '<C-g>', function () return vim.fn['codeium#Accept']() end, { expr = true })
-      vim.keymap.set('i', '<c-;>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true })
-      vim.keymap.set('i', '<c-,>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true })
-      vim.keymap.set('i', '<c-x>', function() return vim.fn['codeium#Clear']() end, { expr = true })
-    end
-  }
+  -- use { 
+  --   'Exafunction/codeium.vim',
+  --   config = function ()
+  --     -- Change '<C-g>' here to any keycode you like.
+  --     vim.keymap.set('i', '<C-g>', function () return vim.fn['codeium#Accept']() end, { expr = true })
+  --     vim.keymap.set('i', '<c-;>', function() return vim.fn['codeium#CycleCompletions'](1) end, { expr = true })
+  --     vim.keymap.set('i', '<c-,>', function() return vim.fn['codeium#CycleCompletions'](-1) end, { expr = true })
+  --     vim.keymap.set('i', '<c-x>', function() return vim.fn['codeium#Clear']() end, { expr = true })
+  --   end
+  -- }
 
   use {
     "folke/todo-comments.nvim",
@@ -204,6 +204,34 @@ end}
         -- or leave it empty to use the default settings
 -- refer to the configuration section below
       }
+    end
+  }
+
+  use {
+    'huggingface/hfcc.nvim',
+    config = function()
+      require('hfcc').setup({
+        -- cf Setup
+        api_token = "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", -- cf Install paragraph
+        model = "bigcode/starcoder", -- can be a model ID or an http(s) endpoint
+        -- parameters that are added to the request body
+        query_params = {
+          max_new_tokens = 60,
+          temperature = 0.2,
+          top_p = 0.95,
+          stop_token = "<|endoftext|>",
+        },
+        -- set this if the model supports fill in the middle
+        fim = {
+          enabled = true,
+          prefix = "<fim_prefix>",
+          middle = "<fim_middle>",
+          suffix = "<fim_suffix>",
+        },
+        debounce_ms = 80,
+        accept_keymap = "<Tab>",
+        dismiss_keymap = "<S-Tab>",
+      })
     end
   }
 
