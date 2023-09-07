@@ -8,6 +8,8 @@ local servers = {
 	"bashls",
 	"jsonls",
 	"yamlls",
+  "eslint",
+  "tsserver"
 }
 
 local settings = {
