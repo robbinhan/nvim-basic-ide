@@ -102,8 +102,8 @@ keymap("n", "<leader>sw", "<cmd>lua require'spectre'.open_visual({select_word=tr
 keymap("n", "<leader>sp", "viw:lua require'spectre'.open_file_search()<cr>", {desc = "search in current file"})
 
 -- fold
-keymap('n', 'zR', require('ufo').openAllFolds)
-keymap('n', 'zM', require('ufo').closeAllFolds)
+-- keymap('n', 'zR', require('ufo').openAllFolds)
+-- keymap('n', 'zM', require('ufo').closeAllFolds)
 
 
 local function close_buffer_and_nvimtree(buffer_cmd, last_window_cmd)

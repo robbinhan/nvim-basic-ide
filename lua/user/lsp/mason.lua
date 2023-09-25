@@ -1,15 +1,15 @@
 local servers = {
 	-- "sumneko_lua",
-  "lua_ls",
+  -- "lua_ls",
 	-- "cssls",
 	-- "html:MasonInstall",
-	"gopls",
-	"pyright",
-	"bashls",
-	"jsonls",
-	"yamlls",
-  "eslint",
-  "tsserver"
+	-- "gopls",
+	-- "pyright",
+	-- "bashls",
+	-- "jsonls",
+	-- "yamlls",
+ --  "eslint",
+ --  "tsserver"
 }
 
 local settings = {
