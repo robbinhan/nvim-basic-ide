@@ -24,8 +24,7 @@ return require("lazy").setup({
   -- My plugins here
   { "nvim-lua/plenary.nvim",  }, -- Useful lua functions used by lots of plugins
   { "windwp/nvim-autopairs",  }, -- Autopairs, integrates with both cmp and treesitter
-  { "numToStr/Comment.nvim",  },
-  { "JoosepAlviste/nvim-ts-context-commentstring", },
+  { "numToStr/Comment.nvim",  config = function() require "user.comment" end},
   { "nvim-tree/nvim-tree.lua",
     version = "*",
     lazy = false,
@@ -37,18 +36,36 @@ return require("lazy").setup({
     end,
   },
   {'akinsho/bufferline.nvim', version = "*", dependencies = 'nvim-tree/nvim-web-devicons', event = { "BufEnter" } , cond = firenvim_not_active,},
-  { "moll/vim-bbye", },
-  { "nvim-lualine/lualine.nvim", },
-  { "akinsho/toggleterm.nvim",  },
-  { "ahmedkhalf/project.nvim",  },
-  { "lewis6991/impatient.nvim",},
-  { "lukas-reineke/indent-blankline.nvim", },
+  { "moll/vim-bbye", }, -- delete buffer
+  { 
+    "nvim-lualine/lualine.nvim",
+    config = function()
+      require("user.lualine")
+    end
+  },
+  { "akinsho/toggleterm.nvim",  version = "*", 
+    config = function()
+      require("user.toggleterm")
+    end
+  },
+  -- { "ahmedkhalf/project.nvim",config = function() require "user.project" end  },
+  { "lukas-reineke/indent-blankline.nvim", config = function() require "user.indentline" end },
   -- dashboard
-  { "goolord/alpha-nvim",  },
+  {
+    'glepnir/dashboard-nvim',
+    event = 'VimEnter',
+    config = function()
+      require('user.dashboard') 
+    end,
+    dependencies = { {'nvim-tree/nvim-web-devicons'}}
+  },
 
   -- Colorschemes
-  { "folke/tokyonight.nvim", },
-  { "lunarvim/darkplus.nvim",  },
+  { "folke/tokyonight.nvim",
+    lazy = false,
+    priority = 1000,
+    opts = {}
+  },
 
   -- cmp plugins
   { 
@@ -61,7 +78,7 @@ return require("lazy").setup({
       "hrsh7th/cmp-buffer",
     },
     config = function()
-      -- require("config.nvim-cmp")
+      require "user.cmp"
     end,
   }, -- The completion plugin
   -- { "hrsh7th/cmp-buffer",}, -- buffer completions
@@ -76,45 +93,54 @@ return require("lazy").setup({
     lazy = true,
 	  version = "2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
 	  -- install jsregexp (optional!).
-	  build = "make install_jsregexp"
+	  build = "make install_jsregexp",
+    dependencies = { "rafamadriz/friendly-snippets" },
   }, --snippet engine
   { "rafamadriz/friendly-snippets",  }, -- a bunch of snippets to use
 
   -- LSP
-  { "williamboman/nvim-lsp-installer",  }, -- simple to language server installer
   { 
     "neovim/nvim-lspconfig",
     event = { 'BufRead', 'BufNewFile' },
     config = function()
-      -- require("config.lsp")
-    end,}, -- enable LSP
+      require("user.lsp")
+    end,
+  }, -- enable LSP
   { "williamboman/mason.nvim"},
   { "williamboman/mason-lspconfig.nvim"},
-  { "jose-elias-alvarez/null-ls.nvim"}, -- for formatters and linters
-  { "RRethy/vim-illuminate"},
+  { "RRethy/vim-illuminate",config = function() require("user.illuminate") end},
 
   -- Telescope
-  { "nvim-telescope/telescope.nvim", },
+  { "nvim-telescope/telescope.nvim", dependencies = { 'nvim-lua/plenary.nvim' }, config = function() require("user.telescope") end, lazy = false },
 
   -- Treesitter
   {
     "nvim-treesitter/nvim-treesitter",
+    dependencies = {
+      "JoosepAlviste/nvim-ts-context-commentstring", 
+    },
     event = "VeryLazy",
     build = ":TSUpdate",
     config = function()
-      -- require("config.treesitter")
+      require("user.treesitter")
     end,
   },
 
   -- Git
-  { "lewis6991/gitsigns.nvim",  },
+  { "lewis6991/gitsigns.nvim", config = function() require('user.gitsigns') end  },
   {'f-person/git-blame.nvim'},
   {'sindrets/diffview.nvim', dependencies = 'nvim-lua/plenary.nvim'},
 
   -- DAP
-  { "mfussenegger/nvim-dap",  },
+  { "mfussenegger/nvim-dap", config = function() require "user.dap" end },
   { "rcarriga/nvim-dap-ui",  },
   { "ravenxrz/DAPInstall.nvim",  },
+  {
+    'theHamsta/nvim-dap-virtual-text',
+    config = function ()
+      require("nvim-dap-virtual-text").setup()
+    end
+  },
 
 
   {
@@ -131,34 +157,21 @@ return require("lazy").setup({
     }
   },
   
-  {'kevinhwang91/nvim-ufo', dependencies = {'kevinhwang91/promise-async',},config = function ()
-    -- Option 2: nvim lsp as LSP client
-    -- Tell the server the capability of foldingRange,
-    -- Neovim hasn't added foldingRange to default capabilities, users must add it manually
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    capabilities.textDocument.foldingRange = {
-      dynamicRegistration = false,
-      lineFoldingOnly = true
-    }
-    local language_servers = require("lspconfig").util.available_servers() -- or list servers manually like {'gopls', 'clangd'},
-    for _, ls in ipairs(language_servers) do
-      require('lspconfig')[ls].setup({
-        capabilities = capabilities
-        -- you can add other fields for setting up lsp server in this table
-      })
-    end
-    require('ufo').setup()
-  end
-  },
-  {
-    "olimorris/onedarkpro.nvim",
-    config = function() require("onedarkpro").setup() end,
-  },
+  {'kevinhwang91/nvim-ufo', dependencies = {'kevinhwang91/promise-async',}, config = function() require "user.ufo" end},
   -- golang
   {
     "ray-x/go.nvim",
-    event = "VimEnter",
-    config = function() require("go").setup() end,
+    dependencies = {  -- optional packages
+      "ray-x/guihua.lua",
+      "neovim/nvim-lspconfig",
+      "nvim-treesitter/nvim-treesitter",
+    },
+    config = function()
+      require "user.ray_x_go"
+    end,
+    event = {"CmdlineEnter"},
+    ft = {"go", 'gomod'},
+    build = ':lua require("go.install").update_all_sync()' -- if you need to install/update all binaries
   },
   'ray-x/guihua.lua',
   {
@@ -176,16 +189,7 @@ return require("lazy").setup({
   {'karb94/neoscroll.nvim'},
   
   {
-    "ellisonleao/glow.nvim",
-    config = function ()
-      require('glow').setup()
-    end,
-  },
-  {
-    'theHamsta/nvim-dap-virtual-text',
-    config = function ()
-      require("nvim-dap-virtual-text").setup()
-    end
+    "ellisonleao/glow.nvim", config = true, cmd = "Glow"
   },
   {
     "ojroques/vim-oscyank",
@@ -206,7 +210,7 @@ return require("lazy").setup({
     -- after = 'nvim-lspconfig',
     -- opt = true,
     -- branch = "main",
-    -- event = "LspAttach",
+    event = "LspAttach",
     config = function()
       require("lspsaga").setup({})
     end,
@@ -216,14 +220,12 @@ return require("lazy").setup({
       {"nvim-treesitter/nvim-treesitter"},
     },
   }
-}
--- ,
-  -- {
-  --   defaults = {
-  --     lazy = true, -- should plugins be lazy-loaded?
-  --   },
-  --   checker = {
-  --     enabled = true,
-  --   },
-  -- }
+},{
+    defaults = {
+      lazy = true, -- should plugins be lazy-loaded?
+    },
+    checker = {
+      enabled = true,
+    },
+  }
 )
