@@ -4,12 +4,13 @@ local servers = {
 	-- "cssls",
 	-- "html:MasonInstall",
 	-- "gopls",
-	-- "pyright",
+	"pyright",
 	-- "bashls",
 	-- "jsonls",
 	-- "yamlls",
  --  "eslint",
  --  "tsserver"
+  "rust_analyzer",
 }
 
 local settings = {
