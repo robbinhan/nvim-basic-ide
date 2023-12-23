@@ -13,6 +13,47 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Install your plugins here
 return require("lazy").setup({
+  -- Lazy
+  {
+    "jackMort/ChatGPT.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim"
+    },
+    config = function()
+      require('user.chatgpt')
+    end
+  },
+  -- {
+  --   "piersolenski/wtf.nvim",
+  --   dependencies = {
+  --     "MunifTanjim/nui.nvim",
+  --   },
+  --   opts = {},
+  --   keys = {
+  --     {
+  --       "gw",
+  --       mode = { "n", "x" },
+  --       function()
+  --         require("wtf").ai()
+  --       end,
+  --       desc = "Debug diagnostic with AI",
+  --     },
+  --     {
+  --       mode = { "n" },
+  --       "gW",
+  --       function()
+  --         require("wtf").search()
+  --       end,
+  --       desc = "Search diagnostic with Google",
+  --     },
+  --   },
+  --   config = function()
+  --     require('user.wtf')
+  --   end
+  -- },
   {
     "folke/noice.nvim",
     event = "VeryLazy",
@@ -136,9 +177,9 @@ return require("lazy").setup({
   {
     "L3MON4D3/LuaSnip",  -- follow latest release.
     lazy = true,
-	  version = "2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
-	  -- install jsregexp (optional!).
-	  build = "make install_jsregexp",
+    version = "2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+    -- install jsregexp (optional!).
+    build = "make install_jsregexp",
     dependencies = { "rafamadriz/friendly-snippets" },
   }, --snippet engine
   { "rafamadriz/friendly-snippets",  }, -- a bunch of snippets to use
@@ -206,7 +247,6 @@ return require("lazy").setup({
     -- your configuration comes here
     -- or leave it empty to use the default settings
     -- refer to the configuration section below
-      
     }
   },
   
@@ -228,19 +268,19 @@ return require("lazy").setup({
   },
   'ray-x/guihua.lua',
   {
-      's1n7ax/nvim-window-picker',
-      name = 'window-picker',
-      event = 'VeryLazy',
-      version = '2.*',
-      config = function()
-          require'window-picker'.setup()
-      end,
+    's1n7ax/nvim-window-picker',
+    name = 'window-picker',
+    event = 'VeryLazy',
+    version = '2.*',
+    config = function()
+      require'window-picker'.setup()
+    end,
   },
   {
     'windwp/nvim-spectre'
   },
   {'karb94/neoscroll.nvim'},
-  
+
   {
     "ellisonleao/glow.nvim", config = true, cmd = "Glow"
   },

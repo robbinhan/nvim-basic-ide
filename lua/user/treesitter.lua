@@ -8,6 +8,9 @@ if not status_ok then
   return
 end
 
+require('ts_context_commentstring').setup {}
+vim.g.skip_ts_context_commentstring_module = true
+
 configs.setup {
   ensure_installed = { "lua", "markdown", "markdown_inline", "bash", "python" }, -- put the language you want in this array
   -- ensure_installed = "all", -- one of "all" or a list of languages
@@ -23,8 +26,8 @@ configs.setup {
   },
   indent = { enable = true, disable = { "python", "css" } },
 
-  context_commentstring = {
-    enable = true,
-    enable_autocmd = false,
-  },
+  -- context_commentstring = {
+  --   enable = true,
+  --   enable_autocmd = false,
+  -- },
 }
