@@ -55,6 +55,21 @@ return require("lazy").setup({
   --   end
   -- },
   {
+    "stevanmilic/nvim-lspimport",
+    lazy = false
+  },
+  {
+    'luk400/vim-jukit',
+  },
+  { 
+    'echasnovski/mini.files',
+    version = '*' ,
+    config = function()
+      require('mini.files').setup()
+    end,
+    lazy = false
+  },
+  {
     "folke/noice.nvim",
     event = "VeryLazy",
     opts = {
@@ -69,16 +84,16 @@ return require("lazy").setup({
       "rcarriga/nvim-notify",
     }
   },
-  {
-    'huggingface/llm.nvim',
-    opts = {
-      -- cf Setup
-    },
-    config = function()
-      require("user.llm")
-    end,
-    lazy = false,
-  },
+  -- {
+  --   'huggingface/llm.nvim',
+  --   opts = {
+  --     -- cf Setup
+  --   },
+  --   config = function()
+  --     require("user.llm")
+  --   end,
+  --   lazy = false,
+  -- },
   {
     "NeogitOrg/neogit",
     dependencies = {
@@ -110,16 +125,16 @@ return require("lazy").setup({
   { "nvim-lua/plenary.nvim",  }, -- Useful lua functions used by lots of plugins
   { "windwp/nvim-autopairs",  }, -- Autopairs, integrates with both cmp and treesitter
   { "numToStr/Comment.nvim",  config = function() require "user.comment" end},
-  { "nvim-tree/nvim-tree.lua",
-    version = "*",
-    lazy = false,
-    dependencies = {
-      "nvim-tree/nvim-web-devicons",
-    },
-    config = function()
-      require("user.nvim-tree")
-    end,
-  },
+  -- { "nvim-tree/nvim-tree.lua",
+  --   version = "*",
+  --   lazy = false,
+  --   dependencies = {
+  --     "nvim-tree/nvim-web-devicons",
+  --   },
+  --   config = function()
+  --     require("user.nvim-tree")
+  --   end,
+  -- },
   {'akinsho/bufferline.nvim', version = "*", dependencies = 'nvim-tree/nvim-web-devicons', event = { "BufEnter" } , cond = firenvim_not_active,},
   { "moll/vim-bbye", }, -- delete buffer
   { 

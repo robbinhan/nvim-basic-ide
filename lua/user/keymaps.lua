@@ -225,3 +225,11 @@ keymap("n", "<Leader>co", "<cmd>Lspsaga outgoing_calls<CR>")
 
 -- Floating terminal
 keymap({"n", "t"}, "<A-d>", "<cmd>Lspsaga term_toggle<CR>")
+
+
+keymap("n", "<leader>mf", "<cmd>lua MiniFiles.open()<CR>", {desc = "Mini Files"})
+
+-- lspimport
+keymap("n", "<leader>a", function()
+  require("lspimport").import()
+end, { noremap = true,desc = "Python Auto Import" })
