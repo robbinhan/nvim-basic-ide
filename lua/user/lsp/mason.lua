@@ -4,7 +4,7 @@ local servers = {
 	-- "cssls",
 	-- "html:MasonInstall",
 	-- "gopls",
-	"pyright",
+	-- "pyright",
 	-- "bashls",
 	-- "jsonls",
 	-- "yamlls",
