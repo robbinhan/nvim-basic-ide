@@ -13,7 +13,45 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Install your plugins here
 return require("lazy").setup({
-    {
+  { -- Autoformat
+    'stevearc/conform.nvim',
+    event = "LspAttach",
+    opts = {
+      notify_on_error = false,
+      format_on_save = {
+        timeout_ms = 500,
+        lsp_fallback = true,
+      },
+      formatters_by_ft = {
+        lua = { 'stylua' },
+        -- Conform will run multiple formatters sequentially
+        go = { "goimports", "gofmt" },
+        -- Use a sub-list to run only the first available formatter
+        javascript = { { "prettierd", "prettier" } },
+        -- You can use a function here to determine the formatters dynamically
+        python = function(bufnr)
+          if require("conform").get_formatter_info("ruff_format", bufnr).available then
+            return { "ruff_format" }
+          else
+            return { "isort", "black" }
+          end
+        end,
+        -- Use the "*" filetype to run formatters on all filetypes.
+        ["*"] = { "codespell" },
+        -- Use the "_" filetype to run formatters on filetypes that don't
+        -- have other formatters configured.
+        ["_"] = { "trim_whitespace" },
+        -- Conform can also run multiple formatters sequentially
+        -- python = { "isort", "black" },
+        --
+        -- You can use a sub-list to tell conform to run *until* a formatter
+        -- is found.
+        -- javascript = { { "prettierd", "prettier" } },
+      },
+    },
+  },
+  'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
+  {
     'mikesmithgh/kitty-scrollback.nvim',
     enabled = true,
     lazy = true,
@@ -73,14 +111,15 @@ return require("lazy").setup({
   {
     'luk400/vim-jukit',
   },
-  { 
+  {
     'echasnovski/mini.files',
-    version = '*' ,
+    version = '*',
     config = function()
       require('mini.files').setup()
     end,
     lazy = false
   },
+  -- { 'echasnovski/mini.statusline', version = '*' },
   {
     "folke/noice.nvim",
     event = "VeryLazy",
@@ -122,8 +161,8 @@ return require("lazy").setup({
   },
   {
     "simrat39/rust-tools.nvim",
-    ft = {"rs"},
-    event = {"CmdlineEnter"},
+    ft = { "rs" },
+    event = { "CmdlineEnter" },
     config = function()
       require("user.rust-tools")
     end,
@@ -137,9 +176,9 @@ return require("lazy").setup({
     end
   },
   -- My plugins here
-  { "nvim-lua/plenary.nvim",  }, -- Useful lua functions used by lots of plugins
-  { "windwp/nvim-autopairs",  }, -- Autopairs, integrates with both cmp and treesitter
-  { "numToStr/Comment.nvim",  config = function() require "user.comment" end},
+  { "nvim-lua/plenary.nvim", }, -- Useful lua functions used by lots of plugins
+  { "windwp/nvim-autopairs", }, -- Autopairs, integrates with both cmp and treesitter
+  { "numToStr/Comment.nvim",   config = function() require "user.comment" end, event = "LspAttach" },
   -- { "nvim-tree/nvim-tree.lua",
   --   version = "*",
   --   lazy = false,
@@ -150,90 +189,151 @@ return require("lazy").setup({
   --     require("user.nvim-tree")
   --   end,
   -- },
-  {'akinsho/bufferline.nvim', version = "*", dependencies = 'nvim-tree/nvim-web-devicons', event = { "BufEnter" } , cond = firenvim_not_active,},
+  { 'akinsho/bufferline.nvim', version = "*",                                  dependencies = 'nvim-tree/nvim-web-devicons', event = { "BufEnter" }, cond = firenvim_not_active, },
   { "moll/vim-bbye", }, -- delete buffer
-  { 
+  {
     "nvim-lualine/lualine.nvim",
     config = function()
       require("user.lualine")
-    end
+    end,
+    event = 'VimEnter',
   },
-  { "akinsho/toggleterm.nvim",  version = "*", 
+  {
+    "akinsho/toggleterm.nvim",
+    version = "*",
     config = function()
       require("user.toggleterm")
     end,
     event = 'VimEnter',
   },
   -- { "ahmedkhalf/project.nvim",config = function() require "user.project" end  },
-  { "lukas-reineke/indent-blankline.nvim", config = function() require "user.indentline" end },
+  -- { "lukas-reineke/indent-blankline.nvim", config = function() require "user.indentline" end },
   -- dashboard
   {
     'glepnir/dashboard-nvim',
     event = 'VimEnter',
     config = function()
-      require('user.dashboard') 
+      require('user.dashboard')
     end,
-    dependencies = { {'nvim-tree/nvim-web-devicons'}}
+    dependencies = { { 'nvim-tree/nvim-web-devicons' } }
   },
 
   -- Colorschemes
-  { "folke/tokyonight.nvim",
+  {
+    "folke/tokyonight.nvim",
     lazy = false,
     priority = 1000,
-    opts = {}
+    opts = {},
+    config = function()
+      -- Load the colorscheme here
+      vim.cmd.colorscheme 'tokyonight-night'
+
+      -- You can configure highlights by doing something like
+      vim.cmd.hi 'Comment gui=none'
+    end,
   },
 
   -- cmp plugins
-  { 
-    "hrsh7th/nvim-cmp",-- load cmp on InsertEnter
+  {
+    "hrsh7th/nvim-cmp", -- load cmp on InsertEnter
     event = "InsertEnter",
     -- these dependencies will only be loaded when cmp loads
     -- dependencies are always lazy-loaded unless specified otherwise
     dependencies = {
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
+      {
+        'L3MON4D3/LuaSnip',
+        build = (function()
+          -- Build Step is needed for regex support in snippets
+          -- This step is not supported in many windows environments
+          -- Remove the below condition to re-enable on windows
+          if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then
+            return
+          end
+          return 'make install_jsregexp'
+        end)(),
+      },
+      'saadparwaiz1/cmp_luasnip',
+      'hrsh7th/cmp-path',
     },
     config = function()
       require "user.cmp"
     end,
-  }, -- The completion plugin
+  },                               -- The completion plugin
   -- { "hrsh7th/cmp-buffer",}, -- buffer completions
-  { "hrsh7th/cmp-path",}, -- path completions
+  { "hrsh7th/cmp-path", },         -- path completions
   { "saadparwaiz1/cmp_luasnip", }, -- snippet completions
   { "hrsh7th/cmp-nvim-lsp", },
   -- { "hrsh7th/cmp-nvim-lua", },
 
   -- snippets
   {
-    "L3MON4D3/LuaSnip",  -- follow latest release.
+    "L3MON4D3/LuaSnip", -- follow latest release.
     lazy = true,
-    version = "2.*", -- Replace <CurrentMajor> by the latest released major (first number of latest release)
+    version = "2.*",    -- Replace <CurrentMajor> by the latest released major (first number of latest release)
     -- install jsregexp (optional!).
     build = "make install_jsregexp",
     dependencies = { "rafamadriz/friendly-snippets" },
-  }, --snippet engine
-  { "rafamadriz/friendly-snippets",  }, -- a bunch of snippets to use
+  },                                   --snippet engine
+  { "rafamadriz/friendly-snippets", }, -- a bunch of snippets to use
 
   -- LSP
-  { 
+  {
     "neovim/nvim-lspconfig",
     event = { 'BufRead', 'BufNewFile' },
     config = function()
       require("user.lsp")
     end,
+    dependencies = {
+      -- Automatically install LSPs and related tools to stdpath for neovim
+      'williamboman/mason.nvim',
+      'williamboman/mason-lspconfig.nvim',
+      'WhoIsSethDaniel/mason-tool-installer.nvim',
+
+      -- Useful status updates for LSP.
+      -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
+      { 'j-hui/fidget.nvim', opts = {} },
+    },
   }, -- enable LSP
-  { "williamboman/mason.nvim"},
-  { "williamboman/mason-lspconfig.nvim"},
-  { "RRethy/vim-illuminate",config = function() require("user.illuminate") end},
+  { "williamboman/mason.nvim" },
+  { "williamboman/mason-lspconfig.nvim" },
+  { "RRethy/vim-illuminate",            config = function() require("user.illuminate") end },
 
   -- Telescope
-  { "nvim-telescope/telescope.nvim", dependencies = { 'nvim-lua/plenary.nvim' }, config = function() require("user.telescope") end, lazy = false },
+  {
+    "nvim-telescope/telescope.nvim",
+    event = 'VimEnter',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      { -- If encountering errors, see telescope-fzf-native README for install instructions
+        'nvim-telescope/telescope-fzf-native.nvim',
+
+        -- `build` is used to run some command when the plugin is installed/updated.
+        -- This is only run then, not every time Neovim starts up.
+        build = 'make',
+
+        -- `cond` is a condition used to determine whether this plugin should be
+        -- installed and loaded.
+        cond = function()
+          return vim.fn.executable 'make' == 1
+        end,
+      },
+      { 'nvim-telescope/telescope-ui-select.nvim' },
+
+      -- Useful for getting pretty icons, but requires special font.
+      --  If you already have a Nerd Font, or terminal set up with fallback fonts
+      --  you can enable this
+      -- { 'nvim-tree/nvim-web-devicons' }
+    },
+    config = function() require("user.telescope") end
+  },
 
   -- Treesitter
   {
     "nvim-treesitter/nvim-treesitter",
     dependencies = {
-      "JoosepAlviste/nvim-ts-context-commentstring", 
+      "JoosepAlviste/nvim-ts-context-commentstring",
     },
     event = "VeryLazy",
     build = ":TSUpdate",
@@ -243,17 +343,17 @@ return require("lazy").setup({
   },
 
   -- Git
-  { "lewis6991/gitsigns.nvim", config = function() require('user.gitsigns') end  },
-  {'f-person/git-blame.nvim'},
-  {'sindrets/diffview.nvim', dependencies = 'nvim-lua/plenary.nvim'},
+  { "lewis6991/gitsigns.nvim",  config = function() require('user.gitsigns') end, event = "LspAttach" },
+  { 'f-person/git-blame.nvim',  event = "LspAttach" },
+  { 'sindrets/diffview.nvim',   dependencies = 'nvim-lua/plenary.nvim' },
 
   -- DAP
-  { "mfussenegger/nvim-dap", config = function() require "user.dap" end },
-  { "rcarriga/nvim-dap-ui",  },
-  { "ravenxrz/DAPInstall.nvim",  },
+  { "mfussenegger/nvim-dap",    config = function() require "user.dap" end },
+  { "rcarriga/nvim-dap-ui", },
+  { "ravenxrz/DAPInstall.nvim", },
   {
     'theHamsta/nvim-dap-virtual-text',
-    config = function ()
+    config = function()
       require("nvim-dap-virtual-text").setup()
     end
   },
@@ -269,22 +369,29 @@ return require("lazy").setup({
     config = function()
       local wk = require("which-key")
       wk.register({
-        ["<leader>n"] = { name = "+Neorg" },
-        ["gt"] = { name = "+Neorg Tasks" },
+        ["<leader>n"] = { name = "+nnn" },
+        -- ["gt"] = { name = "+Neorg Tasks" },
       })
     end,
     opts = {
-    -- your configuration comes here
-    -- or leave it empty to use the default settings
-    -- refer to the configuration section below
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
     }
   },
-  
-  {'kevinhwang91/nvim-ufo', event = "LspAttach", dependencies = {'kevinhwang91/promise-async',}, config = function() require "user.ufo" end},
+
+  {
+    'kevinhwang91/nvim-ufo',
+    event = "LspAttach",
+    dependencies = { 'kevinhwang91/promise-async', },
+    config = function()
+      require "user.ufo"
+    end
+  },
   -- golang
   {
     "ray-x/go.nvim",
-    dependencies = {  -- optional packages
+    dependencies = { -- optional packages
       "ray-x/guihua.lua",
       "neovim/nvim-lspconfig",
       "nvim-treesitter/nvim-treesitter",
@@ -292,8 +399,8 @@ return require("lazy").setup({
     config = function()
       require "user.ray_x_go"
     end,
-    event = {"CmdlineEnter"},
-    ft = {"go", 'gomod'},
+    event = { "CmdlineEnter" },
+    ft = { "go", 'gomod' },
     build = ':lua require("go.install").update_all_sync()' -- if you need to install/update all binaries
   },
   'ray-x/guihua.lua',
@@ -303,13 +410,13 @@ return require("lazy").setup({
     event = 'VeryLazy',
     version = '2.*',
     config = function()
-      require'window-picker'.setup()
+      require 'window-picker'.setup()
     end,
   },
   {
     'windwp/nvim-spectre'
   },
-  {'karb94/neoscroll.nvim'},
+  { 'karb94/neoscroll.nvim' },
 
   {
     "ellisonleao/glow.nvim", config = true, cmd = "Glow"
@@ -319,6 +426,7 @@ return require("lazy").setup({
   },
   {
     "folke/todo-comments.nvim",
+    event = "LspAttach",
     dependencies = "nvim-lua/plenary.nvim",
     config = function()
       require("todo-comments").setup {
@@ -374,74 +482,74 @@ return require("lazy").setup({
       })
     end,
     dependencies = {
-      {"nvim-tree/nvim-web-devicons"},
+      { "nvim-tree/nvim-web-devicons" },
       --Please make sure you install markdown and markdown_inline parser
-      {"nvim-treesitter/nvim-treesitter"},
+      { "nvim-treesitter/nvim-treesitter" },
     },
   },
   {
-  "luukvbaal/nnn.nvim",config = function() require('user.nnn') end, lazy=false
+    "luukvbaal/nnn.nvim", config = function() require('user.nnn') end, lazy = false
   },
-  {
-    "nvim-neorg/neorg",
-    ft = "norg",
-    -- lazy = false,
-    build = ":Neorg sync-parsers",
-    dependencies = { "nvim-lua/plenary.nvim" },
-    config = function()
-      require("neorg").setup {
-        load = {
-          ["core.keybinds"] = {
-            config = {
-            -- not remapping existing keybinds, only adding opts desc for which-key
-            hook = function(keybinds)
-             keybinds.unmap("norg", "n", "gtd")
-             keybinds.map_event("norg", "n", "gtd", "core.norg.qol.todo_items.todo.task_done", { desc = "Task Done" })
-
-             keybinds.unmap("norg", "n", "gtu")
-             keybinds.map_event("norg", "n", "gtu", "core.norg.qol.todo_items.todo.task_undone", { desc = "Task Undone" })
-
-             keybinds.unmap("norg", "n", "gtp")
-             keybinds.map_event("norg", "n", "gtp", "core.norg.qol.todo_items.todo.task_pending", { desc = "Task Pending" })
-
-             keybinds.unmap("norg", "n", "gth")
-             keybinds.map_event("norg", "n", "gth", "core.norg.qol.todo_items.todo.task_on_hold", { desc = "Task On Hold" })
-
-             keybinds.unmap("norg", "n", "gtc")
-             keybinds.map_event("norg", "n", "gtc", "core.norg.qol.todo_items.todo.task_cancelled", { desc = "Task Cancelled" })
-
-             keybinds.unmap("norg", "n", "gtr")
-             keybinds.map_event("norg", "n", "gtr", "core.norg.qol.todo_items.todo.task_recurring", { desc = "Task Recurring" })
-
-             keybinds.unmap("norg", "n", "gti")
-             keybinds.map_event("norg", "n", "gti", "core.norg.qol.todo_items.todo.task_important", { desc = "Task Important" })
-
-             keybinds.unmap("norg", "n", "<leader>nn")
-             keybinds.map_event("norg", "n", "<leader>nn", "core.norg.dirman.new.note", { desc = "New Note" })
-            end
-            },
-          },
-          ["core.defaults"] = {}, -- Loads default behaviour
-          ["core.concealer"] = {}, -- Adds pretty icons to your documents
-          ["core.dirman"] = { -- Manages Neorg workspaces
-            config = {
-              workspaces = {
-                work = "~/notes/work",
-                home = "~/notes/home",
-              },
-            },
-          },
-          ["core.export"] = {},
-        },
-      }
-    end,
+  -- {
+  --   "nvim-neorg/neorg",
+  --   ft = "norg",
+  --   -- lazy = false,
+  --   build = ":Neorg sync-parsers",
+  --   dependencies = { "nvim-lua/plenary.nvim" },
+  --   config = function()
+  --     require("neorg").setup {
+  --       load = {
+  --         ["core.keybinds"] = {
+  --           config = {
+  --           -- not remapping existing keybinds, only adding opts desc for which-key
+  --           hook = function(keybinds)
+  --            keybinds.unmap("norg", "n", "gtd")
+  --            keybinds.map_event("norg", "n", "gtd", "core.norg.qol.todo_items.todo.task_done", { desc = "Task Done" })
+  --
+  --            keybinds.unmap("norg", "n", "gtu")
+  --            keybinds.map_event("norg", "n", "gtu", "core.norg.qol.todo_items.todo.task_undone", { desc = "Task Undone" })
+  --
+  --            keybinds.unmap("norg", "n", "gtp")
+  --            keybinds.map_event("norg", "n", "gtp", "core.norg.qol.todo_items.todo.task_pending", { desc = "Task Pending" })
+  --
+  --            keybinds.unmap("norg", "n", "gth")
+  --            keybinds.map_event("norg", "n", "gth", "core.norg.qol.todo_items.todo.task_on_hold", { desc = "Task On Hold" })
+  --
+  --            keybinds.unmap("norg", "n", "gtc")
+  --            keybinds.map_event("norg", "n", "gtc", "core.norg.qol.todo_items.todo.task_cancelled", { desc = "Task Cancelled" })
+  --
+  --            keybinds.unmap("norg", "n", "gtr")
+  --            keybinds.map_event("norg", "n", "gtr", "core.norg.qol.todo_items.todo.task_recurring", { desc = "Task Recurring" })
+  --
+  --            keybinds.unmap("norg", "n", "gti")
+  --            keybinds.map_event("norg", "n", "gti", "core.norg.qol.todo_items.todo.task_important", { desc = "Task Important" })
+  --
+  --            keybinds.unmap("norg", "n", "<leader>nn")
+  --            keybinds.map_event("norg", "n", "<leader>nn", "core.norg.dirman.new.note", { desc = "New Note" })
+  --           end
+  --           },
+  --         },
+  --         ["core.defaults"] = {}, -- Loads default behaviour
+  --         ["core.concealer"] = {}, -- Adds pretty icons to your documents
+  --         ["core.dirman"] = { -- Manages Neorg workspaces
+  --           config = {
+  --             workspaces = {
+  --               work = "~/notes/work",
+  --               home = "~/notes/home",
+  --             },
+  --           },
+  --         },
+  --         ["core.export"] = {},
+  --       },
+  --     }
+  --   end,
+  -- },
+}, {
+  defaults = {
+    lazy = true, -- should plugins be lazy-loaded?
   },
-},{
-    defaults = {
-      lazy = true, -- should plugins be lazy-loaded?
-    },
-    checker = {
-      enabled = false,
-    },
-  }
+  checker = {
+    enabled = false,
+  },
+}
 )

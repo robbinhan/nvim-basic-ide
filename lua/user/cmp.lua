@@ -8,6 +8,8 @@ if not snip_status_ok then
   return
 end
 
+luasnip.config.setup {}
+
 require("luasnip/loaders/from_vscode").lazy_load()
 
 local check_backspace = function()
@@ -49,6 +51,8 @@ cmp.setup {
       luasnip.lsp_expand(args.body) -- For `luasnip` users.
     end,
   },
+
+  completion = { completeopt = 'menu,menuone,noinsert' },
 
   mapping = cmp.mapping.preset.insert {
     ["<C-k>"] = cmp.mapping.select_prev_item(),

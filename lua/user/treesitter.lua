@@ -25,7 +25,7 @@ configs.setup {
     enable = true,
   },
   indent = { enable = true, disable = { "python", "css" } },
-
+  auto_install = true,
   -- context_commentstring = {
   --   enable = true,
   --   enable_autocmd = false,
