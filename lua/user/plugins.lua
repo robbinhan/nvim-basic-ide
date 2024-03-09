@@ -13,6 +13,43 @@ vim.opt.rtp:prepend(lazypath)
 
 -- Install your plugins here
 return require("lazy").setup({
+  {
+    "rolv-apneseth/tfm.nvim",
+    lazy = false,
+    config = function()
+      -- Set keymap so you can open the default terminal file manager (yazi)
+      vim.api.nvim_set_keymap("n", "<leader>e", "TFM", {
+        noremap = true,
+        callback = require("tfm").open,
+      })
+    end,
+  },
+  {
+    "echasnovski/mini.bufremove",
+    keys = {
+      { "<leader>x", "<cmd>lua MiniBufremove.delete()<CR>", desc = "Buf Delete" },
+    },
+    version = "*",
+    config = true,
+  },
+  -- db manage
+  {
+    "kristijanhusak/vim-dadbod-ui",
+    dependencies = {
+      { 'tpope/vim-dadbod',                     lazy = true },
+      { 'kristijanhusak/vim-dadbod-completion', ft = { 'sql', 'mysql', 'plsql' }, lazy = true },
+    },
+    cmd = {
+      'DBUI',
+      'DBUIToggle',
+      'DBUIAddConnection',
+      'DBUIFindBuffer',
+    },
+    init = function()
+      -- Your DBUI configuration
+      vim.g.db_ui_use_nerd_fonts = 1
+    end,
+  },
   { -- Autoformat
     'stevearc/conform.nvim',
     event = "LspAttach",
@@ -111,14 +148,14 @@ return require("lazy").setup({
   {
     'luk400/vim-jukit',
   },
-  {
-    'echasnovski/mini.files',
-    version = '*',
-    config = function()
-      require('mini.files').setup()
-    end,
-    lazy = false
-  },
+  -- {
+  --   'echasnovski/mini.files',
+  --   version = '*',
+  --   config = function()
+  --     require('mini.files').setup()
+  --   end,
+  --   lazy = false
+  -- },
   -- { 'echasnovski/mini.statusline', version = '*' },
   {
     "folke/noice.nvim",
@@ -487,9 +524,9 @@ return require("lazy").setup({
       { "nvim-treesitter/nvim-treesitter" },
     },
   },
-  {
-    "luukvbaal/nnn.nvim", config = function() require('user.nnn') end, lazy = false
-  },
+  -- {
+  --   "luukvbaal/nnn.nvim", config = function() require('user.nnn') end, lazy = false
+  -- },
   -- {
   --   "nvim-neorg/neorg",
   --   ft = "norg",

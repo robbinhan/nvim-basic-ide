@@ -53,11 +53,11 @@ keymap("v", ">", ">gv", opts)
 -- Plugins --
 
 -- Git
-keymap("n", "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", {desc = "Lazygit"})
-keymap("n", "<leader>gd", ":DiffviewOpen<CR>", {desc = "Git Diff"})
+keymap("n", "<leader>gg", "<cmd>lua _LAZYGIT_TOGGLE()<CR>", { desc = "Lazygit" })
+keymap("n", "<leader>gd", ":DiffviewOpen<CR>", { desc = "Git Diff" })
 
 -- Comment
-keymap("n", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", {desc = "Comment"})
+keymap("n", "<leader>/", "<cmd>lua require('Comment.api').toggle.linewise.current()<CR>", { desc = "Comment" })
 keymap("x", "<leader>/", "<esc><cmd>lua require('Comment.api').toggle.linewise(vim.fn.visualmode())<CR>", opts)
 
 -- DAP
@@ -72,41 +72,42 @@ keymap("n", "<leader>du", "<cmd>lua require'dapui'.toggle()<cr>", opts)
 keymap("n", "<leader>dt", "<cmd>lua require'dap'.terminate()<cr>", opts)
 
 -- Lsp
-keymap("n", "<leader>lf", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", {desc = "Format"})
+keymap("n", "<leader>lf", "<cmd>lua vim.lsp.buf.format{ async = true }<cr>", { desc = "Format" })
 
 -- makrdown
-keymap("n", "<leader>mp", ":Glow<cr>", {desc = "Preview current markdown file"})
+keymap("n", "<leader>mp", ":Glow<cr>", { desc = "Preview current markdown file" })
 
 
 -- pick window
 keymap("n", "<leader>w", function()
-    local picked_window_id = require('window-picker').pick_window() or vim.api.nvim_get_current_win()
-    vim.api.nvim_set_current_win(picked_window_id)
+  local picked_window_id = require('window-picker').pick_window() or vim.api.nvim_get_current_win()
+  vim.api.nvim_set_current_win(picked_window_id)
 end, { desc = "Pick a window" })
 
 -- spectre
-keymap("n", "<leader>S", "<cmd>lua require'spectre'.open()<cr>", {desc="Search and Replace with spectre"})
+keymap("n", "<leader>S", "<cmd>lua require'spectre'.open()<cr>", { desc = "Search and Replace with spectre" })
 -- search current word
-keymap("n", "<leader>sw", "<cmd>lua require'spectre'.open_visual({select_word=true})<cr>", {desc = "search current word"})
+keymap("n", "<leader>sw", "<cmd>lua require'spectre'.open_visual({select_word=true})<cr>",
+  { desc = "search current word" })
 -- search in current file
-keymap("n", "<leader>sp", "viw:lua require'spectre'.open_file_search()<cr>", {desc = "search in current file"})
+keymap("n", "<leader>sp", "viw:lua require'spectre'.open_file_search()<cr>", { desc = "search in current file" })
 
 -- fold
 -- keymap('n', 'zR', require('ufo').openAllFolds)
 -- keymap('n', 'zM', require('ufo').closeAllFolds)
 
 
-keymap("n", "<Leader>x", "<cmd>bd", { noremap = true, silent = true, desc = "Close buffer" })
+-- keymap("n", "<Leader>x", "<cmd>bd", { noremap = true, silent = true, desc = "Close buffer" })
 
 -- termnial
 
-keymap("n", "<leader>tt", ":ToggleTerm<CR>", {desc="Open Termnial"})
+keymap("n", "<leader>tt", ":ToggleTerm<CR>", { desc = "Open Termnial" })
 
 
 -- oscyank
-keymap("n","<Leader>c",'<Plug>OSCYankOperator')
-keymap("n","<Leader>cc",'<leader>c_', {remap = true})
-keymap("v","<Leader>c",'<Plug>OSCYankVisual')
+keymap("n", "<Leader>c", '<Plug>OSCYankOperator')
+keymap("n", "<Leader>cc", '<leader>c_', { remap = true })
+keymap("v", "<Leader>c", '<Plug>OSCYankVisual')
 
 -- lspsaga
 -- LSP finder - Find the symbol's definition
@@ -116,7 +117,7 @@ keymap("v","<Leader>c",'<Plug>OSCYankVisual')
 keymap("n", "gh", "<cmd>Lspsaga lsp_finder<CR>")
 
 -- Code action
-keymap({"n","v"}, "<leader>ca", "<cmd>Lspsaga code_action<CR>")
+keymap({ "n", "v" }, "<leader>ca", "<cmd>Lspsaga code_action<CR>")
 
 -- Rename all occurrences of the hovered word for the entire file
 keymap("n", "gr", "<cmd>Lspsaga rename<CR>")
@@ -132,7 +133,7 @@ keymap("n", "gr", "<cmd>Lspsaga rename ++project<CR>")
 keymap("n", "gp", "<cmd>Lspsaga peek_definition<CR>")
 
 -- Go to definition
-keymap("n","gd", "<cmd>Lspsaga goto_definition<CR>")
+keymap("n", "gd", "<cmd>Lspsaga goto_definition<CR>")
 
 -- Peek type definition
 -- You can edit the file containing the type definition in the floating window
@@ -142,7 +143,7 @@ keymap("n","gd", "<cmd>Lspsaga goto_definition<CR>")
 keymap("n", "gt", "<cmd>Lspsaga peek_type_definition<CR>")
 
 -- Go to type definition
-keymap("n","gt", "<cmd>Lspsaga goto_type_definition<CR>")
+keymap("n", "gt", "<cmd>Lspsaga goto_type_definition<CR>")
 
 
 -- Show line diagnostics
@@ -173,7 +174,7 @@ keymap("n", "]E", function()
 end)
 
 -- Toggle outline
-keymap("n","<leader>o", "<cmd>Lspsaga outline<CR>")
+keymap("n", "<leader>o", "<cmd>Lspsaga outline<CR>")
 
 -- Hover Doc
 -- If there is no hover doc,
@@ -195,12 +196,12 @@ keymap("n", "<Leader>ci", "<cmd>Lspsaga incoming_calls<CR>")
 keymap("n", "<Leader>co", "<cmd>Lspsaga outgoing_calls<CR>")
 
 -- Floating terminal
-keymap({"n", "t"}, "<A-d>", "<cmd>Lspsaga term_toggle<CR>")
+keymap({ "n", "t" }, "<A-d>", "<cmd>Lspsaga term_toggle<CR>")
 
 
-keymap("n", "<leader>mf", "<cmd>lua MiniFiles.open()<CR>", {desc = "Mini Files"})
+-- keymap("n", "<leader>mf", "<cmd>lua MiniFiles.open()<CR>", { desc = "Mini Files" })
 
 -- lspimport
 keymap("n", "<leader>a", function()
   require("lspimport").import()
-end, { noremap = true,desc = "Python Auto Import" })
+end, { noremap = true, desc = "Python Auto Import" })
