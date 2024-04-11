@@ -1,11 +1,17 @@
 return {
   settings = {
     basedpyright = {
-      analysis = {
-        autoSearchPaths = true,
-        diagnosticMode = "openFilesOnly",
-        useLibraryCodeForTypes = true
-      }
-    }
+      typeCheckingMode = "off",
+    },
+    -- python = {
+    --   analysis = {
+    --     -- autoImportCompletions = true,
+    --     -- autoSearchPaths = true,
+    --     -- diagnosticMode = "openFilesOnly",
+    --     -- useLibraryCodeForTypes = true,
+    --     -- typeCheckingMode = "off",
+    --     -- disableLanguageServices = true
+    --   }
+    -- }
   },
 }

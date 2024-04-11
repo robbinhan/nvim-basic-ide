@@ -55,4 +55,12 @@ lualine.setup {
     lualine_y = { location },
     lualine_z = { "progress" },
   },
+  tabline = {
+    lualine_a = { 'buffers' },
+    lualine_b = { 'branch' },
+    lualine_c = { 'filename' },
+    lualine_x = {},
+    lualine_y = {},
+    lualine_z = { 'tabs' }
+  }
 }

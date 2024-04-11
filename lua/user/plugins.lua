@@ -40,6 +40,7 @@ return require("lazy").setup({
     event = "VeryLazy",
     dependencies = {
       "nvim-lualine/lualine.nvim",
+      "SmiteshP/nvim-navic",
       -- if you want to open telescope window when click on LSP info of lualine, uncomment it
       -- "nvim-telescope/telescope.nvim"
     },
@@ -62,7 +63,12 @@ return require("lazy").setup({
         disabled = false,
       },
       init_tab_date = true,
-    }
+    },
+    config = function()
+      require("lualine-ext").init_tab_navic()
+      require("lualine-ext").init_tab_blame()
+      require("lualine-ext").init_noice()
+    end
   },
   {
     "zeioth/garbage-day.nvim",
