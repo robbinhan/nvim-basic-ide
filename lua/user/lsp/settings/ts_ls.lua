@@ -1,7 +1,6 @@
-
 return {
   settings = {
-    ['tsserver'] = {
+    ['ts_ls'] = {
       completions = {
         completeFunctionCalls = true
       },

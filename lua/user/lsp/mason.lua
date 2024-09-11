@@ -3,7 +3,7 @@ local servers = {
   "lua_ls",
   -- "cssls",
   -- "html:MasonInstall",
-  -- "gopls",
+  "gopls",
   "pyright",
   -- "basedpyright",
   -- "bashls",
@@ -13,7 +13,7 @@ local servers = {
   -- "jdtls",
   "ruff",
   "ruff_lsp",
-  "tsserver",
+  "ts_ls",
   "rust_analyzer",
 }
 

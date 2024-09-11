@@ -10,7 +10,6 @@ if not vim.loop.fs_stat(lazypath) then
   })
 end
 vim.opt.rtp:prepend(lazypath)
-
 -- Install your plugins here
 return require("lazy").setup({
   -- { "mfussenegger/nvim-jdtls" },
@@ -76,24 +75,23 @@ return require("lazy").setup({
     event = "VeryLazy",
   },
   {
-    "rolv-apneseth/tfm.nvim",
-    lazy = false,
+    "smjonas/inc-rename.nvim",
     config = function()
-      -- Set keymap so you can open the default terminal file manager (yazi)
-      vim.api.nvim_set_keymap("n", "<leader>e", "TFM", {
-        noremap = true,
-        callback = require("tfm").open,
-      })
+      require("inc_rename").setup()
     end,
   },
-  {
-    "echasnovski/mini.bufremove",
-    keys = {
-      { "<leader>x", "<cmd>lua MiniBufremove.delete()<CR>", desc = "Buf Delete" },
-    },
-    version = "*",
-    config = true,
-  },
+  -- {
+  --   "rolv-apneseth/tfm.nvim",
+  --   lazy = false,
+  --   config = function()
+  --     -- Set keymap so you can open the default terminal file manager (yazi)
+  --     vim.api.nvim_set_keymap("n", "<leader>e", "TFM", {
+  --       noremap = true,
+  --       callback = require("tfm").open,
+  --     })
+  --   end,
+  -- },
+
   -- db manage
   {
     "kristijanhusak/vim-dadbod-ui",
@@ -118,7 +116,7 @@ return require("lazy").setup({
     opts = {
       notify_on_error = false,
       format_on_save = {
-        timeout_ms = 500,
+        timeout_ms = 5000,
         lsp_fallback = true,
       },
       formatters_by_ft = {
@@ -163,18 +161,18 @@ return require("lazy").setup({
     end,
   },
   -- Lazy
-  {
-    "jackMort/ChatGPT.nvim",
-    event = "VeryLazy",
-    dependencies = {
-      "MunifTanjim/nui.nvim",
-      "nvim-lua/plenary.nvim",
-      "nvim-telescope/telescope.nvim"
-    },
-    config = function()
-      require('user.chatgpt')
-    end
-  },
+  -- {
+  --   "jackMort/ChatGPT.nvim",
+  --   event = "VeryLazy",
+  --   dependencies = {
+  --     "MunifTanjim/nui.nvim",
+  --     "nvim-lua/plenary.nvim",
+  --     "nvim-telescope/telescope.nvim"
+  --   },
+  --   config = function()
+  --     require('user.chatgpt')
+  --   end
+  -- },
   -- {
   --   "piersolenski/wtf.nvim",
   --   dependencies = {
@@ -210,14 +208,30 @@ return require("lazy").setup({
   {
     'luk400/vim-jukit',
   },
-  -- {
-  --   'echasnovski/mini.files',
-  --   version = '*',
-  --   config = function()
-  --     require('mini.files').setup()
-  --   end,
-  --   lazy = false
-  -- },
+  {
+    "echasnovski/mini.bufremove",
+    keys = {
+      { "<leader>x", "<cmd>lua MiniBufremove.delete()<CR>", desc = "Buf Delete" },
+    },
+    version = "*",
+    config = true,
+  },
+  {
+    'echasnovski/mini.files',
+    version = '*',
+    config = function()
+      local mini_files = require('mini.files')
+
+      mini_files.setup({
+        -- 其他配置选项可以在这里添加
+      })
+
+      -- 将 <leader>e 映射到这个函数
+      vim.api.nvim_set_keymap('n', '<leader>e', ':lua require("mini.files").open(vim.api.nvim_buf_get_name(0), true)<CR>',
+        { noremap = true, silent = true })
+    end,
+    lazy = false
+  },
   -- { 'echasnovski/mini.statusline', version = '*' },
   {
     "folke/noice.nvim",
@@ -395,9 +409,42 @@ return require("lazy").setup({
       { 'j-hui/fidget.nvim', opts = {} },
     },
   }, -- enable LSP
-  { "williamboman/mason.nvim" },
-  { "williamboman/mason-lspconfig.nvim" },
-  { "RRethy/vim-illuminate",            config = function() require("user.illuminate") end },
+  {
+    "williamboman/mason.nvim",
+    config = function()
+      require('mason').setup()
+    end,
+  },
+  {
+    "williamboman/mason-lspconfig.nvim",
+    config = function()
+      require('mason-lspconfig').setup({
+        ensure_installed = {
+          "lua-language-server",
+          -- "pyright",
+          -- "tsserver",
+          -- 添加你需要的其他语言服务器
+        }
+      })
+    end,
+  },
+  {
+    'WhoIsSethDaniel/mason-tool-installer.nvim',
+    config = function()
+      require('mason-tool-installer').setup({
+        ensure_installed = {
+          "lua-language-server",
+          -- "pyright",
+          -- "eslint_d",
+          -- "prettier",
+          -- 添加你需要的其他工具
+        },
+        auto_update = true,
+        run_on_start = true,
+      })
+    end,
+  },
+  { "RRethy/vim-illuminate",        config = function() require("user.illuminate") end },
 
   -- Telescope
   {
@@ -456,8 +503,12 @@ return require("lazy").setup({
       require("nvim-dap-virtual-text").setup()
     end
   },
-
-
+  {
+    'echasnovski/mini.icons',
+    config = function()
+      require('mini.icons').setup()
+    end,
+  },
   {
     "folke/which-key.nvim",
     event = "VeryLazy",
@@ -468,7 +519,8 @@ return require("lazy").setup({
     config = function()
       local wk = require("which-key")
       wk.register({
-        ["<leader>n"] = { name = "+nnn" },
+        -- ["<leader>n"] = { name = "+nnn" },
+        { "", group = "nnn" },
         -- ["gt"] = { name = "+Neorg Tasks" },
       })
     end,
