@@ -207,3 +207,87 @@ end, { noremap = true, desc = "Python Auto Import" })
 
 
 keymap("n", "<leader>rn", ":IncRename ")
+
+
+-- mouse users + nvimtree users!
+vim.keymap.set("n", "<RightMouse>", function()
+  vim.cmd.exec '"normal! \\<RightMouse>"'
+
+  local neogit_options = {
+    {
+      name = "Neogit",
+      cmd = function()
+        vim.cmd "Neogit"
+      end,
+    },
+  }
+  local options = {
+    {
+      name = "Code Actions",
+      cmd = vim.lsp.buf.code_action,
+      rtxt = "<leader>ca",
+    },
+
+    { name = "separator" },
+
+    {
+      name = "  Lsp Actions",
+      hl = "Exblue",
+      items = "lsp",
+    },
+    { name = "separator" },
+    {
+      name = " Gitsigns Actions",
+      hl = "Exblue",
+      items = "gitsigns",
+    },
+    { name = "separator" },
+    {
+      name = "  Neogit Actions",
+      hl = "Exblue",
+      items = neogit_options,
+    },
+    { name = "separator" },
+    {
+      name = "Edit Config",
+      cmd = function()
+        vim.cmd "tabnew"
+        local conf = vim.fn.stdpath "config"
+        vim.cmd("tcd " .. conf .. " | e init.lua")
+      end,
+      rtxt = "ed",
+    },
+
+    { name = "separator" },
+
+    {
+      name = "  Open in terminal",
+      hl = "ExRed",
+      cmd = function()
+        local old_buf = require("menu.state").old_data.buf
+        local old_bufname = vim.api.nvim_buf_get_name(old_buf)
+        local old_buf_dir = vim.fn.fnamemodify(old_bufname, ":h")
+
+        local cmd = "cd " .. old_buf_dir
+
+        -- base46_cache var is an indicator of nvui user!
+        if vim.g.base46_cache then
+          require("nvchad.term").new { cmd = cmd, pos = "sp" }
+        else
+          vim.cmd "enew"
+          vim.fn.termopen { vim.o.shell, "-c", cmd .. " ; " .. vim.o.shell }
+        end
+      end,
+    },
+
+    { name = "separator" },
+
+    {
+      name = "  Color Picker",
+      cmd = function()
+        require("minty.huefy").open()
+      end,
+    },
+  }
+  require("menu").open(options, { mouse = true })
+end, {})

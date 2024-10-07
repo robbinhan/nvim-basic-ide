@@ -12,6 +12,8 @@ end
 vim.opt.rtp:prepend(lazypath)
 -- Install your plugins here
 return require("lazy").setup({
+  { "nvchad/volt",  lazy = true },
+  { "nvchad/menu",  lazy = true },
   {
     "amitds1997/remote-nvim.nvim",
     version = "*",                     -- Pin to GitHub releases
