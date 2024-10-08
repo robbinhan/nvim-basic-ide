@@ -651,6 +651,12 @@ return require("lazy").setup({
       { "nvim-treesitter/nvim-treesitter" },
     },
   },
+  {
+    "nvim-neorg/neorg",
+    lazy = false,  -- Disable lazy loading as some `lazy.nvim` distributions set `lazy = true` by default
+    version = "*", -- Pin Neorg to the latest stable release
+    config = true,
+  },
   -- {
   --   "luukvbaal/nnn.nvim", config = function() require('user.nnn') end, lazy = false
   -- },
