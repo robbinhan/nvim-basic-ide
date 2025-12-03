@@ -12,8 +12,59 @@ end
 vim.opt.rtp:prepend(lazypath)
 -- Install your plugins here
 return require("lazy").setup({
-  { "nvchad/volt",  lazy = true },
-  { "nvchad/menu",  lazy = true },
+  {
+    'Exafunction/codeium.vim',
+    event = 'BufEnter'
+  },
+  {
+    "ThePrimeagen/harpoon",
+    lazy = false,
+    branch = "harpoon2",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      local harpoon = require("harpoon")
+
+      -- REQUIRED
+      harpoon:setup()
+      -- REQUIRED
+      --
+      -- basic telescope configuration
+      local conf = require("telescope.config").values
+      local function toggle_telescope(harpoon_files)
+        local file_paths = {}
+        for _, item in ipairs(harpoon_files.items) do
+          table.insert(file_paths, item.value)
+        end
+
+        require("telescope.pickers").new({}, {
+          prompt_title = "Harpoon",
+          finder = require("telescope.finders").new_table({
+            results = file_paths,
+          }),
+          previewer = conf.file_previewer({}),
+          sorter = conf.generic_sorter({}),
+        }):find()
+      end
+
+      vim.keymap.set("n", "<leader>he", function() toggle_telescope(harpoon:list()) end,
+        { desc = "Open harpoon window" })
+
+
+      vim.keymap.set("n", "<leader>ha", function() harpoon:list():add() end)
+      -- vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+
+      vim.keymap.set("n", "<C-h>", function() harpoon:list():select(1) end)
+      vim.keymap.set("n", "<C-t>", function() harpoon:list():select(2) end)
+      vim.keymap.set("n", "<C-n>", function() harpoon:list():select(3) end)
+      vim.keymap.set("n", "<C-s>", function() harpoon:list():select(4) end)
+
+      -- Toggle previous & next buffers stored within Harpoon list
+      vim.keymap.set("n", "<C-S-P>", function() harpoon:list():prev() end)
+      vim.keymap.set("n", "<C-S-N>", function() harpoon:list():next() end)
+    end
+  },
+  { "nvchad/volt", lazy = true },
+  { "nvchad/menu", lazy = true },
   {
     "amitds1997/remote-nvim.nvim",
     version = "*",                     -- Pin to GitHub releases
@@ -651,12 +702,130 @@ return require("lazy").setup({
       { "nvim-treesitter/nvim-treesitter" },
     },
   },
+  -- {
+  --   'nvim-orgmode/orgmode',
+  --   event = 'VeryLazy',
+  --   ft = { 'org' },
+  --   config = function()
+  --     local Menu = require("org-modern.menu")
+  --     -- Setup orgmode
+  --     require('orgmode').setup({
+  --       ui = {
+  --         menu = {
+  --           handler = function(data)
+  --             Menu:new({
+  --               window = {
+  --                 margin = { 1, 0, 1, 0 },
+  --                 padding = { 0, 1, 0, 1 },
+  --                 title_pos = "center",
+  --                 border = "single",
+  --                 zindex = 1000,
+  --               },
+  --               icons = {
+  --                 separator = "➜",
+  --               },
+  --             }):open(data)
+  --           end,
+  --         },
+  --       },
+  --       org_todo_keywords = { 'TODO', 'WAITING', 'PROCESSING', '|', 'DONE', 'DELEGATED' },
+  --       org_agenda_files = '~/orgfiles/**/*',
+  --       org_default_notes_file = '~/orgfiles/refile.org',
+  --       org_capture_templates = {
+  --         r = {
+  --           description = "Repo",
+  --           template = "* [[%x][%(return string.match('%x', '([^/]+)$'))]]%?",
+  --           target = "~/orgfiles/repos.org",
+  --         }
+  --       },
+  --       mappings = {
+  --         org = {
+  --           org_toggle_checkbox = '<Leader>ob'
+  --         }
+  --       }
+  --     })
+  --
+  --     -- NOTE: If you are using nvim-treesitter with ~ensure_installed = "all"~ option
+  --     -- add ~org~ to ignore_install
+  --     -- require('nvim-treesitter.configs').setup({
+  --     --   ensure_installed = 'all',
+  --     --   ignore_install = { 'org' },
+  --     -- })
+  --   end,
+  --   dependencies = { "danilshvalov/org-modern.nvim", }
+  -- },
   {
-    "nvim-neorg/neorg",
-    lazy = false,  -- Disable lazy loading as some `lazy.nvim` distributions set `lazy = true` by default
-    version = "*", -- Pin Neorg to the latest stable release
-    config = true,
+    "lukas-reineke/headlines.nvim",
+    dependencies = "nvim-treesitter/nvim-treesitter",
+    config = true, -- or `opts = {}`
+    event = 'VeryLazy',
+    ft = { 'org' },
   },
+
+  {
+    "chipsenkbeil/org-roam.nvim",
+    event = 'VeryLazy',
+    ft = { 'org' },
+    dependencies = {
+      {
+        "nvim-orgmode/orgmode",
+      },
+    },
+    config = function()
+      require("org-roam").setup({
+        directory = "~/orgfiles",
+        -- optional
+        org_files = {
+          "~/orgfiles",
+        }
+      })
+    end
+  },
+  {
+    "nvim-orgmode/telescope-orgmode.nvim",
+    event = "VeryLazy",
+    dependencies = {
+      "nvim-orgmode/orgmode",
+      "nvim-telescope/telescope.nvim",
+    },
+    config = function()
+      require("telescope").load_extension("orgmode")
+
+      vim.keymap.set("n", "<leader>r", require("telescope").extensions.orgmode.refile_heading)
+      vim.keymap.set("n", "<leader>fh", require("telescope").extensions.orgmode.search_headings)
+      vim.keymap.set("n", "<leader>li", require("telescope").extensions.orgmode.insert_link)
+    end,
+  },
+  {
+    "danilshvalov/org-modern.nvim",
+  }
+  -- {
+  --   "nvim-neorg/neorg",
+  --   lazy = false,  -- Disable lazy loading as some `lazy.nvim` distributions set `lazy = true` by default
+  --   version = "*", -- Pin Neorg to the latest stable release
+  --   ["core.keybinds"] = {
+  --     -- https://github.com/nvim-neorg/neorg/blob/main/lua/neorg/modules/core/keybinds/keybinds.lua
+  --     config = {
+  --       default_keybinds = true,
+  --       neorg_leader = "<Leader><Leader>",
+  --     },
+  --   },
+  --   config = function()
+  --     require("neorg").setup({
+  --       load = {
+  --         ["core.defaults"] = {},
+  --         ["core.dirman"] = {
+  --           config = {
+  --             workspaces = {
+  --               notes = "~/notes",
+  --             },
+  --             default = "notes",
+  --           },
+  --         },
+  --       },
+  --     })
+  --   end,
+  -- },
   -- {
   --   "luukvbaal/nnn.nvim", config = function() require('user.nnn') end, lazy = false
   -- },

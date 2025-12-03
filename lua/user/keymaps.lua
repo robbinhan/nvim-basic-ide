@@ -221,7 +221,22 @@ vim.keymap.set("n", "<RightMouse>", function()
       end,
     },
   }
+  local golang_options = {
+    {
+      name = "GoCmt",
+      cmd = function()
+        vim.cmd "GoCmt"
+      end,
+    },
+
+  }
   local options = {
+    {
+      name = "  Golang Actions",
+      hl = "Exblue",
+      items = golang_options,
+    },
+    { name = "separator" },
     {
       name = "Code Actions",
       cmd = vim.lsp.buf.code_action,
