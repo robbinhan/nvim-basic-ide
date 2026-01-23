@@ -33,7 +33,7 @@ keymap("n", "<S-l>", ":bnext<CR>", opts)
 keymap("n", "<S-h>", ":bprevious<CR>", opts)
 
 -- Clear highlights
-keymap("n", "<leader>h", "<cmd>nohlsearch<CR>", opts)
+keymap("n", "<leader>nh", "<cmd>nohlsearch<CR>", opts)
 
 -- Close buffers
 keymap("n", "<S-q>", "<cmd>Bdelete!<CR>", opts)
@@ -105,9 +105,9 @@ keymap("n", "<leader>tt", ":ToggleTerm<CR>", { desc = "Open Termnial" })
 
 
 -- oscyank
-keymap("n", "<Leader>c", '<Plug>OSCYankOperator')
-keymap("n", "<Leader>cc", '<leader>c_', { remap = true })
-keymap("v", "<Leader>c", '<Plug>OSCYankVisual')
+keymap("n", "<Leader>y", '<Plug>OSCYankOperator')
+keymap("n", "<Leader>yy", '<leader>y_', { remap = true })
+keymap("v", "<Leader>y", '<Plug>OSCYankVisual')
 
 -- lspsaga
 -- LSP finder - Find the symbol's definition
@@ -199,8 +199,7 @@ keymap("n", "<Leader>co", "<cmd>Lspsaga outgoing_calls<CR>")
 keymap({ "n", "t" }, "<A-d>", "<cmd>Lspsaga term_toggle<CR>")
 
 
--- lspimport
-keymap("n", "<leader>a", function()
+keymap("n", "<leader>ai", function()
   require("lspimport").import()
 end, { noremap = true, desc = "Python Auto Import" })
 

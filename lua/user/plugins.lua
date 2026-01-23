@@ -13,8 +13,42 @@ vim.opt.rtp:prepend(lazypath)
 -- Install your plugins here
 return require("lazy").setup({
   {
-    'Exafunction/codeium.vim',
-    event = 'BufEnter'
+    "NickvanDyke/opencode.nvim",
+    lazy = false,
+    dependencies = {
+      {
+        "folke/snacks.nvim",
+        opts = {
+          input = { enabled = true },
+          picker = { enabled = true },
+          terminal = { enabled = true }
+        },
+      },
+    },
+    config = function()
+      -- 配置选项
+      vim.g.opencode_opts = {
+        -- 可选:设置自定义端口
+        -- port = 3000,
+      }
+      -- 必需:自动重载文件(当 opencode 修改文件时)
+      vim.opt.autoread = true
+      -- 便捷快捷键
+      local opencode = require("opencode")
+
+      -- 询问 OpenCode 关于当前内容
+      vim.keymap.set({ "n", "x" }, "<leader>aa", function()
+        opencode.ask("@this: ", { submit = true })
+      end, { desc = "Ask OpenCode about this" })
+      -- 切换 OpenCode TUI
+      vim.keymap.set("n", "<leader>at", function()
+        opencode.toggle()
+      end, { desc = "Toggle OpenCode" })
+      -- 选择上下文/提示
+      vim.keymap.set({ "n", "x" }, "<leader>as", function()
+        opencode.select({ submit = true })
+      end, { desc = "OpenCode Select Context" })
+    end,
   },
   {
     "ThePrimeagen/harpoon",
@@ -473,12 +507,7 @@ return require("lazy").setup({
       { 'j-hui/fidget.nvim', opts = {} },
     },
   }, -- enable LSP
-  {
-    "williamboman/mason.nvim",
-    config = function()
-      require('mason').setup()
-    end,
-  },
+  -- Mason configuration moved to lua/user/lsp/mason.lua to avoid duplicate setup
   {
     "williamboman/mason-lspconfig.nvim",
     config = function()
@@ -582,10 +611,8 @@ return require("lazy").setup({
     end,
     config = function()
       local wk = require("which-key")
-      wk.register({
-        -- ["<leader>n"] = { name = "+nnn" },
-        { "", group = "nnn" },
-        -- ["gt"] = { name = "+Neorg Tasks" },
+      wk.add({
+        { "<leader>n", group = "nnn" },
       })
     end,
     opts = {
@@ -791,7 +818,7 @@ return require("lazy").setup({
     config = function()
       require("telescope").load_extension("orgmode")
 
-      vim.keymap.set("n", "<leader>r", require("telescope").extensions.orgmode.refile_heading)
+      vim.keymap.set("n", "<leader>or", require("telescope").extensions.orgmode.refile_heading)
       vim.keymap.set("n", "<leader>fh", require("telescope").extensions.orgmode.search_headings)
       vim.keymap.set("n", "<leader>li", require("telescope").extensions.orgmode.insert_link)
     end,

@@ -52,24 +52,19 @@ local settings = {
 
 require("mason").setup(settings)
 
--- You can add other tools here that you want Mason to install
--- for you, so that they are available from within Neovim.
-local ensure_installed = vim.tbl_keys(servers or {})
-vim.list_extend(ensure_installed, {
-  'stylua', -- Used to format lua code
-})
-require('mason-tool-installer').setup { ensure_installed = ensure_installed }
-
 require("mason-lspconfig").setup({
   ensure_installed = servers,
   automatic_installation = true,
 })
 
+require('mason-tool-installer').setup {
+  ensure_installed = {
+    'stylua',
+  }
+}
 
-local lspconfig_status_ok, lspconfig = pcall(require, "lspconfig")
-if not lspconfig_status_ok then
-  return
-end
+
+local lspconfig = require("lspconfig")
 
 local opts = {}
 for _, server in pairs(servers) do
@@ -82,7 +77,6 @@ for _, server in pairs(servers) do
 
   local require_ok, conf_opts = pcall(require, "user.lsp.settings." .. server)
   if require_ok then
-    -- opts = vim.tbl_deep_extend("force", conf_opts, opts)
     opts = vim.tbl_deep_extend("force", opts, conf_opts)
   end
 
