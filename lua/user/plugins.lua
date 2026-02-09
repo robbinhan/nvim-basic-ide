@@ -12,6 +12,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 -- Install your plugins here
 return require("lazy").setup({
+  -- OpenCode 插件（开源 AI 编程助手）
   {
     "NickvanDyke/opencode.nvim",
     lazy = false,
@@ -26,29 +27,68 @@ return require("lazy").setup({
       },
     },
     config = function()
-      -- 配置选项
-      vim.g.opencode_opts = {
-        -- 可选:设置自定义端口
-        -- port = 3000,
-      }
-      -- 必需:自动重载文件(当 opencode 修改文件时)
+      vim.g.opencode_opts = {}
       vim.opt.autoread = true
-      -- 便捷快捷键
-      local opencode = require("opencode")
 
-      -- 询问 OpenCode 关于当前内容
-      vim.keymap.set({ "n", "x" }, "<leader>aa", function()
+      local opencode = require("opencode")
+      vim.keymap.set({ "n", "x" }, "<leader>oa", function()
         opencode.ask("@this: ", { submit = true })
       end, { desc = "Ask OpenCode about this" })
-      -- 切换 OpenCode TUI
-      vim.keymap.set("n", "<leader>at", function()
+      vim.keymap.set("n", "<leader>ot", function()
         opencode.toggle()
       end, { desc = "Toggle OpenCode" })
-      -- 选择上下文/提示
-      vim.keymap.set({ "n", "x" }, "<leader>as", function()
+      vim.keymap.set({ "n", "x" }, "<leader>os", function()
         opencode.select({ submit = true })
       end, { desc = "OpenCode Select Context" })
     end,
+  },
+
+  -- Claude Code 插件（Anthropic 官方）
+  {
+    "coder/claudecode.nvim",
+    lazy = false,
+    dependencies = { "folke/snacks.nvim" },
+    config = function()
+      require("claudecode").setup({
+        terminal = {
+          split_side = "right",
+          split_width_percentage = 0.30,
+          provider = "auto",
+        },
+        diff_opts = {
+          auto_close_on_accept = true,
+          vertical_split = true,
+        },
+      })
+    end,
+    keys = {
+      -- 切换/打开 Claude Code 终端
+      { "<leader>cc", "<cmd>ClaudeCode<cr>", desc = "Toggle Claude Code" },
+
+      -- 智能焦点切换
+      { "<leader>cf", "<cmd>ClaudeCodeFocus<cr>", desc = "Focus Claude Code" },
+
+      -- 发送可视选择的代码
+      { "<leader>cs", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
+
+      -- 恢复上次会话
+      { "<leader>cr", "<cmd>ClaudeCode --resume<cr>", desc = "Resume Claude" },
+
+      -- 继续对话
+      { "<leader>cC", "<cmd>ClaudeCode --continue<cr>", desc = "Continue Claude" },
+
+      -- 选择模型
+      { "<leader>cm", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Model" },
+
+      -- 添加当前文件到上下文
+      { "<leader>cb", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add Buffer to Claude" },
+
+      -- 接受 Claude 的更改
+      { "<leader>ca", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept Changes" },
+
+      -- 拒绝 Claude 的更改
+      { "<leader>cd", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny Changes" },
+    },
   },
   {
     "ThePrimeagen/harpoon",

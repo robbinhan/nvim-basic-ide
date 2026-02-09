@@ -1,18 +1,8 @@
 local servers = {
-  -- "sumneko_lua",
   "lua_ls",
-  -- "cssls",
-  -- "html:MasonInstall",
   "gopls",
   "pyright",
-  -- "basedpyright",
-  -- "bashls",
-  -- "jsonls",
-  -- "yamlls",
-  --  "eslint",
-  -- "jdtls",
   "ruff",
-  -- "ruff_lsp",
   "ts_ls",
   "rust_analyzer",
 }
@@ -28,26 +18,6 @@ local settings = {
   },
   log_level = vim.log.levels.INFO,
   max_concurrent_installers = 4,
-  keymaps = {
-    -- Keymap to expand a package
-    toggle_package_expand = "<CR>",
-    -- Keymap to install the package under the current cursor position
-    install_package = "i",
-    -- Keymap to reinstall/update the package under the current cursor position
-    update_package = "u",
-    -- Keymap to check for new version for the package under the current cursor position
-    check_package_version = "c",
-    -- Keymap to update all installed packages
-    update_all_packages = "U",
-    -- Keymap to check which installed packages are outdated
-    check_outdated_packages = "C",
-    -- Keymap to uninstall a package
-    uninstall_package = "X",
-    -- Keymap to cancel a package installation
-    cancel_installation = "<C-c>",
-    -- Keymap to apply language filter
-    apply_language_filter = "<C-f>",
-  },
 }
 
 require("mason").setup(settings)
@@ -63,22 +33,25 @@ require('mason-tool-installer').setup {
   }
 }
 
+require("user.lsp.handlers").setup()
 
-local lspconfig = require("lspconfig")
+local capabilities = require("user.lsp.handlers").capabilities
 
-local opts = {}
+vim.lsp.config('*', {
+  capabilities = capabilities,
+  root_markers = { '.git' },
+})
+
 for _, server in pairs(servers) do
-  opts = {
-    on_attach = require("user.lsp.handlers").on_attach,
-    capabilities = require("user.lsp.handlers").capabilities,
-  }
-
   server = vim.split(server, "@")[1]
 
+  local opts = {}
   local require_ok, conf_opts = pcall(require, "user.lsp.settings." .. server)
   if require_ok then
     opts = vim.tbl_deep_extend("force", opts, conf_opts)
   end
 
-  lspconfig[server].setup(opts)
+  vim.lsp.config(server, opts)
 end
+
+vim.lsp.enable(servers)
