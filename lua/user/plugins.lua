@@ -367,6 +367,31 @@ return require("lazy").setup({
       -- 将 <leader>e 映射到这个函数
       vim.api.nvim_set_keymap('n', '<leader>e', ':lua require("mini.files").open(vim.api.nvim_buf_get_name(0), true)<CR>',
         { noremap = true, silent = true })
+
+      -- 复制路径映射
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "MiniFilesBufferCreate",
+        callback = function(args)
+          local buf_id = args.data.buf_id
+          -- 复制绝对路径
+          vim.keymap.set("n", "<leader>yp", function()
+            local entry = mini_files.get_fs_entry()
+            if entry then
+              vim.fn.setreg("+", entry.path)
+              vim.notify("Copied: " .. entry.path)
+            end
+          end, { buffer = buf_id, desc = "Copy absolute path" })
+          -- 复制相对路径
+          vim.keymap.set("n", "<leader>yr", function()
+            local entry = mini_files.get_fs_entry()
+            if entry then
+              local rel = vim.fn.fnamemodify(entry.path, ":~:.")
+              vim.fn.setreg("+", rel)
+              vim.notify("Copied: " .. rel)
+            end
+          end, { buffer = buf_id, desc = "Copy relative path" })
+        end,
+      })
     end,
     lazy = false
   },
@@ -411,10 +436,10 @@ return require("lazy").setup({
     config = true
   },
   {
-    "simrat39/rust-tools.nvim",
-    ft = { "rs" },
-    event = { "CmdlineEnter" },
-    config = function()
+    "mrcjkb/rustaceanvim",
+    version = "^5",
+    ft = { "rust" },
+    init = function()
       require("user.rust-tools")
     end,
   },
@@ -547,20 +572,6 @@ return require("lazy").setup({
       { 'j-hui/fidget.nvim', opts = {} },
     },
   }, -- enable LSP
-  -- Mason configuration moved to lua/user/lsp/mason.lua to avoid duplicate setup
-  {
-    "williamboman/mason-lspconfig.nvim",
-    config = function()
-      require('mason-lspconfig').setup({
-        ensure_installed = {
-          "lua-language-server",
-          -- "pyright",
-          -- "tsserver",
-          -- 添加你需要的其他语言服务器
-        }
-      })
-    end,
-  },
   {
     'WhoIsSethDaniel/mason-tool-installer.nvim',
     config = function()

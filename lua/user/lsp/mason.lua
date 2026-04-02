@@ -4,8 +4,10 @@ local servers = {
   "pyright",
   "ruff",
   "ts_ls",
-  "rust_analyzer",
 }
+
+-- rust_analyzer 由 rustaceanvim 接管，不在此处 enable
+local mason_ensure = vim.list_extend(vim.deepcopy(servers), { "rust_analyzer" })
 
 local settings = {
   ui = {
@@ -23,8 +25,7 @@ local settings = {
 require("mason").setup(settings)
 
 require("mason-lspconfig").setup({
-  ensure_installed = servers,
-  automatic_installation = true,
+  ensure_installed = mason_ensure,
 })
 
 require('mason-tool-installer').setup {
